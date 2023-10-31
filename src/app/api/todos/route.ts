@@ -49,3 +49,26 @@ export async function POST(request: Request) {
 
     return NextResponse.json(todo);
 }
+
+export async function PUT(request: Request) {
+    const { userId, id, title, completed }: Partial<Todo> = await request.json();
+
+    if (!userId || !id || !title || typeof(completed) !== 'boolean') return NextResponse.json({ message: 'Missing required data' });
+
+    const res = await fetch(`${DATA_SOURCE}/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'API-Key': API_KEY
+        },
+        body: JSON.stringify({
+            userId,
+            title,
+            completed
+        })
+    });
+
+    const todo: Todo = await res.json();
+
+    return NextResponse.json(todo);
+}
